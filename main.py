@@ -45,7 +45,7 @@ def main():
                            price_zone)
 
     avg = get_day_avergare(resp)
-    print(f'Average price: {avg}')
+    print(f'Average price: {avg:.2f} kr/kWh')
 
 if __name__ == "__main__":
     main()

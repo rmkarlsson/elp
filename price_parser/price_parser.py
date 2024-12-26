@@ -26,7 +26,7 @@ def get_day_avergare(data):
 
     if count > 0:
         average_value = total_value / count
-        logger.debug(f"Calculated average value: {average_value}")
+        logger.debug(f"Calculated average value: {average_value:.2f} öre")
         return average_value/100
     else:
         print("No 'Value' key found in the list of JSON objects")
