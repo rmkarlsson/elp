@@ -1,16 +1,14 @@
 import requests
 
-API_ENDPOINT = "/api/price/spot/pricearea/"
 PRICE_AREA_TAG = "SN"
-PRICE_AREA = "3"
 
-def get_price_blob(price_source, start_date, end_date):
-    url = get_price_url(price_source, start_date, end_date)
+def get_price_blob(price_source, start_date, end_date, price_area):
+    url = get_price_url(price_source, start_date, end_date, price_area)
     return fetch_json(url)
 
 
-def get_price_url(price_source, start_date, end_date):
-    return f"{price_source}{API_ENDPOINT}{start_date}/{end_date}/{PRICE_AREA_TAG}{PRICE_AREA}"
+def get_price_url(price_source, start_date, end_date, price_zone):
+    return f"{price_source}/{start_date}/{end_date}/{PRICE_AREA_TAG}{price_zone}"
 
 
 def fetch_json(url):
