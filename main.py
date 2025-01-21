@@ -1,7 +1,7 @@
 import argparse
 from fetcher.fetcher import get_price_blob
 import configparser
-from price_parser.price_parser import read_json_string, get_day_avergare
+from price_parser.price_parser import read_json_string, get_montly_cost
 import logging
 
 def main():
@@ -14,6 +14,7 @@ def main():
 
     try:
         price_source = config['Source']['api']
+        consumptions = config['Consumption']
         price_zone = config['Zone']['sn']
         start_time = config['Time']['start']
         end_time = config['Time']['end']
@@ -44,8 +45,9 @@ def main():
     resp =  get_price_blob(price_source, start_time, end_time, 
                            price_zone)
 
-    avg = get_day_avergare(resp)
-    print(f'Average price: {avg:.2f} kr/kWh')
+    cost_list = get_montly_cost(resp, consumptions)
+    for cost in cost_list:
+        print(f'Average price: {cost:.2f} kr')
 
 if __name__ == "__main__":
     main()
