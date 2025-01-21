@@ -7,6 +7,7 @@ import logging
 def main():
     parser = argparse.ArgumentParser(description="Process a string argument.")
     parser.add_argument('--config-file', type=str, required=False, default='energy-price.ini', help='Energy price calculator configuration file')
+    parser.add_argument('--monthly-average', action='store_true', help='Just print the monthly average price')
     args = parser.parse_args()
 
     config = configparser.ConfigParser()
@@ -19,6 +20,7 @@ def main():
         start_time = config['Time']['start']
         end_time = config['Time']['end']
         debug_level = config['Logging']['log_level']
+        fixed_price = config['Fixed']['price']
 
     except KeyError as e:
         print(f"Unable to read all needed attributes from config file {args.config_file} missing key {e}")
@@ -45,9 +47,11 @@ def main():
     resp =  get_price_blob(price_source, start_time, end_time, 
                            price_zone)
 
-    cost_list = get_montly_cost(resp, consumptions)
-    for cost in cost_list:
-        print(f'Average price: {cost:.2f} kr')
+    cost_list = get_montly_cost(resp, consumptions, fixed_price)
+    if args.monthly_average:
+        for cost in cost_list:
+            print(f'Average price: {cost:.2f} kr')
+    
 
 if __name__ == "__main__":
     main()

@@ -23,7 +23,7 @@ def convert_to_time_object(time_string):
         return None
 
 
-def get_montly_cost(data, consumption):
+def get_montly_cost(data, consumption, fixed_price):
     total_value = 0
     count = 0
     cost = []
@@ -34,16 +34,22 @@ def get_montly_cost(data, consumption):
 
             if isinstance(item, dict) and "TimeStamp" in item:
                 date = convert_to_time_object(item["TimeStamp"])
+                month_str = date.strftime("%b")
                 if date.month != previous_date.month:
-                    month_str = date.strftime("%b")
-                    logger.debug(f"Month changed from {previous_date.month} to {date.month} or as a string {month_str}, consumption = {consumption[month_str]}")
+                    old_month_str = previous_date.strftime("%b")
+                    logger.debug(f"Month changed: {old_month_str} ==> {month_str}")
                     if count > 0:
                         month_avg = (total_value / count)/100
                         count = 0
                         total_value = 0
-                        cost.append(int(consumption[month_str]) * month_avg)
-                        logger.debug(f"Avg for {month_str} is {month_avg:.2f} kr/kWh")
-                        logger.debug(f'Total cost is  {int(consumption[month_str]) * month_avg:.2f} kr')
+                        cost.append(int(consumption[old_month_str]) * month_avg)
+                        logger.debug(f"Avg for {old_month_str} is {month_avg:.2f} kr/kWh")
+                        cost_month = int(consumption[month_str]) * month_avg
+                        savings_fixed_cost_month = ((int(consumption[month_str]) * float(fixed_price))/100) - cost_month
+                        logger.debug(f'Total cost for {old_month_str} is {int(consumption[month_str]) * month_avg:.2f} kr')
+                        logger.debug(f'Savings to fixed price is {savings_fixed_cost_month:.2f} kr based on {(float(fixed_price)/100) - month_avg:.2f} kr/kWh and consumption {int(consumption[month_str])}')
+
+
                     previous_date = date
 
 
